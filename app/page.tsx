@@ -6,20 +6,20 @@ import IntroLoader from './components/IntroLoader';
 
 // Project Data for Meta-Portfolio Navigation
 const PROJECTS = [
-  { id: 1, title: 'A1 Tantra', image: 'https://loremflickr.com/800/600/abstract,art?random=1', link: 'https://github.com/HarshalPatel1972/a1-tantra' },
+  { id: 1, title: 'A1 Tantra', image: '/img/A1Tantra.png', link: 'https://a1-tantra.vercel.app' },
   { id: 2, title: 'Sweet Shop Kata', image: 'https://loremflickr.com/800/600/candy,shop?random=2', link: 'https://github.com/HarshalPatel1972/sweet-shop-kata' },
-  { id: 3, title: 'Ghibli Elevator', image: 'https://loremflickr.com/800/600/anime,ghibli?random=3', link: 'https://github.com/HarshalPatel1972/ghibli-elevator' },
+  { id: 3, title: 'Ghibli Elevator', image: '/img/Elevator.png', link: 'https://ghibli-elevator.vercel.app' },
   { id: 4, title: 'History Lasso', image: 'https://loremflickr.com/800/600/clock,history?random=4', link: 'https://github.com/HarshalPatel1972/history-lasso' },
   { id: 5, title: 'Flipbook Marvel', image: 'https://loremflickr.com/800/600/comic,marvel?random=5', link: 'https://github.com/HarshalPatel1972/flipbook-marvel' },
-  { id: 6, title: 'Argument Arbiter', image: 'https://loremflickr.com/800/600/law,gavel?random=6', link: 'https://github.com/HarshalPatel1972/argument-arbiter' },
+  { id: 6, title: 'Argument Arbiter', image: '/img/Argument.png', link: 'https://argument-arbiter.vercel.app' },
   { id: 7, title: 'Mnemosyne', image: 'https://loremflickr.com/800/600/brain,memory?random=7', link: 'https://github.com/HarshalPatel1972/Mnemosyne' },
-  { id: 8, title: 'Timeline', image: 'https://loremflickr.com/800/600/time,scroll?random=8', link: 'https://github.com/HarshalPatel1972/timeline' },
+  { id: 8, title: 'Timeline', image: '/img/Timline-app.png', link: 'https://timeline.vercel.app' },
   { id: 9, title: 'Sweet Shop UI', image: 'https://loremflickr.com/800/600/dessert,ui?random=9', link: 'https://github.com/HarshalPatel1972/sweet-shop-frontend' },
   { id: 10, title: 'Prompted by Harshal', image: 'https://loremflickr.com/800/600/creative,code?random=10', link: 'https://github.com/HarshalPatel1972/Prompted-by-Harshal' },
   { id: 11, title: '100 Year Scroll', image: 'https://loremflickr.com/800/600/vintage,scroll?random=11', link: 'https://github.com/HarshalPatel1972/The-100-Year-Scroll' },
   { id: 12, title: 'Guardian', image: 'https://loremflickr.com/800/600/shield,security?random=12', link: 'https://github.com/HarshalPatel1972/guardian' },
   { id: 13, title: 'Truth Layer', image: 'https://loremflickr.com/800/600/eye,truth?random=13', link: 'https://github.com/HarshalPatel1972/truth-layer' },
-  { id: 14, title: 'Friday VA', image: 'https://loremflickr.com/800/600/robot,voice?random=14', link: 'https://github.com/HarshalPatel1972/friday-va' },
+  { id: 14, title: 'Pari Physiotherapy', image: '/img/Pari.png', link: 'https://pari-physiotherapy.vercel.app' },
   { id: 15, title: 'Global Pulse', image: 'https://loremflickr.com/800/600/earth,map?random=15', link: 'https://github.com/HarshalPatel1972/global-pulse' },
 ];
 
