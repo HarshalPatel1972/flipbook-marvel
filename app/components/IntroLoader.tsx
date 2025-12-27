@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Use loremflickr for anime/comic style images to match the request
+// Use loremflickr for anime/comic style images
 const IMAGE_URLS = Array.from({ length: 15 }, (_, i) => 
   `https://loremflickr.com/1920/1080/anime,comic?random=${i}`
 );
@@ -12,7 +12,7 @@ export default function IntroLoader() {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
-  // States: 'loading' -> 'animating' -> 'complete'
+  // Phases: 'loading' -> 'animating' -> 'complete'
   const [phase, setPhase] = useState<'loading' | 'animating' | 'complete'>('loading');
 
   // 1. Preload Images
@@ -27,7 +27,7 @@ export default function IntroLoader() {
            setImagesLoaded(true);
            setPhase('animating');
        }
-    }, 5000);
+    }, 8000); // 8s timeout to be safe for 15 heavy images
 
     IMAGE_URLS.forEach((src) => {
       const img = new Image();
@@ -37,7 +37,6 @@ export default function IntroLoader() {
         if (loadedCount === totalImages && isMounted) {
           clearTimeout(timer);
           setImagesLoaded(true);
-          // Small buffer before starting the show
           setTimeout(() => setPhase('animating'), 500);
         }
       };
@@ -54,12 +53,12 @@ export default function IntroLoader() {
     return () => { isMounted = false; clearTimeout(timer); };
   }, []);
 
-  // 2. Continuous Image Flipping
+  // 2. High-Performance Image Flipping
   useEffect(() => {
     if (phase === 'animating') {
       const interval = setInterval(() => {
         setCurrentImageIndex((prev) => (prev + 1) % IMAGE_URLS.length);
-      }, 120); // Slightly slower than 80ms to appreciate the "anime" art
+      }, 100); // 100ms smooth cycle
 
       return () => clearInterval(interval);
     }
@@ -70,7 +69,7 @@ export default function IntroLoader() {
     if (phase === 'animating') {
         const timeout = setTimeout(() => {
             setPhase('complete');
-        }, 10000); // 10 seconds total animation
+        }, 10000); // 10s animation
         return () => clearTimeout(timeout);
     }
   }, [phase]);
@@ -78,9 +77,9 @@ export default function IntroLoader() {
   return (
     <div className={`fixed inset-0 z-50 overflow-hidden font-sans pointer-events-none`}>
         {/* 
-           Image Layer (The content inside the text)
-           - Visible during animation.
-           - Fades out at the end to reveal the simple solid text.
+           Layer 1: The Image Stack (Content)
+           - We render ALL images absolutely positioned.
+           - We toggle opacity. This avoids "decoding" stutter because they are already in the DOM.
         */}
         <motion.div 
             className="absolute inset-0 bg-black z-0"
@@ -89,21 +88,33 @@ export default function IntroLoader() {
             transition={{ duration: 1.5, ease: "easeInOut" }}
         >
              {(phase === 'animating' || phase === 'loading') && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                    <img 
-                        src={IMAGE_URLS[currentImageIndex]}
-                        className="w-full h-full object-cover opacity-80"
-                        alt="Background Art"
-                    />
+                <div className="absolute inset-0 w-full h-full">
+                    {IMAGE_URLS.map((src, index) => (
+                        <div 
+                            key={src}
+                            className="absolute inset-0 w-full h-full flex items-center justify-center will-change-[opacity]"
+                            style={{ 
+                                opacity: currentImageIndex === index ? 1 : 0,
+                                zIndex: currentImageIndex === index ? 10 : 1,
+                                // Use visibility to prevent painting off-screen images if needed, 
+                                // but opacity 0 is usually GPU optimized enough.
+                            }}
+                        >
+                             <img 
+                                src={src}
+                                className="w-full h-full object-cover opacity-80"
+                                alt=""
+                            />
+                        </div>
+                    ))}
                 </div>
              )}
         </motion.div>
 
         {/* 
-            Mask Layer
-            - Before Complete: Mix-blend-multiply with Black BG = White Text becomes transparent window.
-            - After Complete: Text becomes Solid White (or page title color).
-         */}
+            Layer 2: The Mask (Multiply Blend)
+            - Standard "Zoom Out" from scale 100 -> 1
+        */}
         <motion.div 
             className={`
                 absolute inset-0 z-10 flex items-center justify-center
@@ -119,7 +130,7 @@ export default function IntroLoader() {
                 animate={phase === 'animating' ? { scale: 1 } : phase === 'complete' ? { scale: 1 } : { scale: 100 }}
                 transition={{ 
                     duration: 10, 
-                    ease: [0.16, 1, 0.3, 1] // long smooth expo ease out
+                    ease: [0.16, 1, 0.3, 1] 
                 }}
             >
                 <h1 className="text-white font-black text-8xl md:text-[12rem] tracking-tighter leading-none">
