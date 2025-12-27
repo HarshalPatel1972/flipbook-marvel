@@ -5,28 +5,20 @@ import Link from 'next/link';
 import IntroLoader from './components/IntroLoader';
 
 // Project Data for Meta-Portfolio Navigation
+// Project Data for Meta-Portfolio Navigation (Strictly User Provided)
 const PROJECTS = [
   { id: 1, title: 'A1 Tantra', image: '/img/A1Tantra.png', link: 'https://a1-tantra.vercel.app' },
-  { id: 2, title: 'Sweet Shop Kata', image: 'https://loremflickr.com/800/600/candy,shop?random=2', link: 'https://github.com/HarshalPatel1972/sweet-shop-kata' },
-  { id: 3, title: 'Ghibli Elevator', image: '/img/Elevator.png', link: 'https://ghibli-elevator.vercel.app' },
-  { id: 4, title: 'History Lasso', image: 'https://loremflickr.com/800/600/clock,history?random=4', link: 'https://github.com/HarshalPatel1972/history-lasso' },
-  { id: 5, title: 'Flipbook Marvel', image: 'https://loremflickr.com/800/600/comic,marvel?random=5', link: 'https://github.com/HarshalPatel1972/flipbook-marvel' },
-  { id: 6, title: 'Argument Arbiter', image: '/img/Argument.png', link: 'https://argument-arbiter.vercel.app' },
-  { id: 7, title: 'Mnemosyne', image: 'https://loremflickr.com/800/600/brain,memory?random=7', link: 'https://github.com/HarshalPatel1972/Mnemosyne' },
-  { id: 8, title: 'Timeline', image: '/img/Timline-app.png', link: 'https://timeline.vercel.app' },
-  { id: 9, title: 'Sweet Shop UI', image: 'https://loremflickr.com/800/600/dessert,ui?random=9', link: 'https://github.com/HarshalPatel1972/sweet-shop-frontend' },
-  { id: 10, title: 'Prompted by Harshal', image: 'https://loremflickr.com/800/600/creative,code?random=10', link: 'https://github.com/HarshalPatel1972/Prompted-by-Harshal' },
-  { id: 11, title: '100 Year Scroll', image: 'https://loremflickr.com/800/600/vintage,scroll?random=11', link: 'https://github.com/HarshalPatel1972/The-100-Year-Scroll' },
-  { id: 12, title: 'Guardian', image: 'https://loremflickr.com/800/600/shield,security?random=12', link: 'https://github.com/HarshalPatel1972/guardian' },
-  { id: 13, title: 'Truth Layer', image: 'https://loremflickr.com/800/600/eye,truth?random=13', link: 'https://github.com/HarshalPatel1972/truth-layer' },
-  { id: 14, title: 'Pari Physiotherapy', image: '/img/Pari.png', link: 'https://pari-physiotherapy.vercel.app' },
-  { id: 15, title: 'Global Pulse', image: 'https://loremflickr.com/800/600/earth,map?random=15', link: 'https://github.com/HarshalPatel1972/global-pulse' },
+  { id: 2, title: 'Ghibli Elevator', image: '/img/Elevator.png', link: 'https://ghibli-elevator.vercel.app' },
+  { id: 3, title: 'Argument Arbiter', image: '/img/Argument.png', link: 'https://argument-arbiter.vercel.app' },
+  { id: 4, title: 'Timeline', image: '/img/Timline-app.png', link: 'https://timeline.vercel.app' },
+  { id: 5, title: 'Pari Physiotherapy', image: '/img/Pari.png', link: 'https://pari-physiotherapy.vercel.app' },
 ];
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-neutral-950 text-white selection:bg-red-500 selection:text-white relative overflow-hidden">
-      <IntroLoader />
+      {/* Pass Project Images to IntroLoader so it flips through them */}
+      <IntroLoader images={PROJECTS.map(p => p.image)} />
 
       {/* Scattered Project Portal (Revealed after Loader Fades) */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none h-screen">
@@ -40,8 +32,9 @@ export default function Home() {
                     key={project.id}
                     className="absolute w-44 h-28 md:w-64 md:h-40 bg-neutral-800 border-4 border-white/5 shadow-2xl z-10 hover:z-[60] hover:scale-150 transition-all duration-500 ease-out group"
                     style={{
-                        left: `${(i % 5) * 20 + (Math.random() * 10 - 5)}%`, 
-                        top: `${Math.floor(i / 5) * 25 + (Math.random() * 10 - 5)}%`,
+                        // Spread 5 items more centrally 
+                        left: `${15 + (i % 3) * 30 + (Math.random() * 10 - 5)}%`, 
+                        top: `${30 + Math.floor(i / 3) * 30 + (Math.random() * 10 - 5)}%`,
                         rotate: `${rotate}deg`,
                     }}
                     initial={{ opacity: 0, scale: 0.8 }}

@@ -8,17 +8,25 @@ export const IMAGE_URLS = Array.from({ length: 15 }, (_, i) =>
   `https://loremflickr.com/1920/1080/anime,comic?random=${i}`
 );
 
-export default function IntroLoader() {
+export default function IntroLoader({ images }: { images: string[] }) {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
+  // Use provided images or fallback to prevent crash
+  const sourceImages = images && images.length > 0 ? images : [];
+
   // Phases: 'loading' -> 'animating' -> 'complete'
   const [phase, setPhase] = useState<'loading' | 'animating' | 'complete'>('loading');
 
   // 1. Preload Images
   useEffect(() => {
+    if (sourceImages.length === 0) {
+        setPhase('animating'); // Skip loading if no images
+        return;
+    }
+
     let loadedCount = 0;
-    const totalImages = IMAGE_URLS.length;
+    const totalImages = sourceImages.length;
     let isMounted = true;
     
     // Safety timeout
@@ -27,9 +35,9 @@ export default function IntroLoader() {
            setImagesLoaded(true);
            setPhase('animating');
        }
-    }, 8000); // 8s timeout to be safe for 15 heavy images
+    }, 8000); 
 
-    IMAGE_URLS.forEach((src) => {
+    sourceImages.forEach((src) => {
       const img = new Image();
       img.src = src;
       img.onload = () => {
@@ -51,18 +59,18 @@ export default function IntroLoader() {
     });
 
     return () => { isMounted = false; clearTimeout(timer); };
-  }, []);
+  }, [sourceImages]);
 
   // 2. High-Performance Image Flipping
   useEffect(() => {
-    if (phase === 'animating') {
+    if (phase === 'animating' && sourceImages.length > 0) {
       const interval = setInterval(() => {
-        setCurrentImageIndex((prev) => (prev + 1) % IMAGE_URLS.length);
-      }, 100); // 100ms smooth cycle
+        setCurrentImageIndex((prev) => (prev + 1) % sourceImages.length);
+      }, 100); 
 
       return () => clearInterval(interval);
     }
-  }, [phase]);
+  }, [phase, sourceImages]);
 
   // 3. Phase Completion Logic
   useEffect(() => {
@@ -90,9 +98,9 @@ export default function IntroLoader() {
              {/* Render images during 'complete' too so they freeze-frame while fading out */}
              {(phase === 'animating' || phase === 'loading' || phase === 'complete') && (
                 <div className="absolute inset-0 w-full h-full">
-                    {IMAGE_URLS.map((src, index) => (
+                    {sourceImages.map((src, index) => (
                         <div 
-                            key={src}
+                            key={src + index} // simple unique key
                             className="absolute inset-0 w-full h-full flex items-center justify-center will-change-[opacity]"
                             style={{ 
                                 opacity: currentImageIndex === index ? 1 : 0,
