@@ -6,21 +6,21 @@ import IntroLoader from './components/IntroLoader';
 
 // Project Data for Meta-Portfolio Navigation
 const PROJECTS = [
-  { id: 1, title: 'The Arc', image: 'https://loremflickr.com/800/600/architecture?random=1', link: '/project/arc' },
-  { id: 2, title: 'Neon Pulse', image: 'https://loremflickr.com/800/600/cyberpunk?random=2', link: '/project/neon' },
-  { id: 3, title: 'Zenith', image: 'https://loremflickr.com/800/600/abstract?random=3', link: '/project/zenith' },
-  { id: 4, title: 'Aether', image: 'https://loremflickr.com/800/600/sky?random=4', link: '/project/aether' },
-  { id: 5, title: 'Iron Clad', image: 'https://loremflickr.com/800/600/metal?random=5', link: '/project/iron' },
-  { id: 6, title: 'Velvet UI', image: 'https://loremflickr.com/800/600/texture?random=6', link: '/project/velvet' },
-  { id: 7, title: 'Echoes', image: 'https://loremflickr.com/800/600/water?random=7', link: '/project/echoes' },
-  { id: 8, title: 'Prism', image: 'https://loremflickr.com/800/600/glass?random=8', link: '/project/prism' },
-  { id: 9, title: 'Nova', image: 'https://loremflickr.com/800/600/space?random=9', link: '/project/nova' },
-  { id: 10, title: 'Terra', image: 'https://loremflickr.com/800/600/nature?random=10', link: '/project/terra' },
-  { id: 11, title: 'Quantum', image: 'https://loremflickr.com/800/600/science?random=11', link: '/project/quantum' },
-  { id: 12, title: 'Flux', image: 'https://loremflickr.com/800/600/light?random=12', link: '/project/flux' },
-  { id: 13, title: 'Apex', image: 'https://loremflickr.com/800/600/mountain?random=13', link: '/project/apex' },
-  { id: 14, title: 'Cipher', image: 'https://loremflickr.com/800/600/code?random=14', link: '/project/cipher' },
-  { id: 15, title: 'Origin', image: 'https://loremflickr.com/800/600/art?random=15', link: '/project/origin' },
+  { id: 1, title: 'A1 Tantra', image: 'https://loremflickr.com/800/600/abstract,art?random=1', link: 'https://github.com/HarshalPatel1972/a1-tantra' },
+  { id: 2, title: 'Sweet Shop Kata', image: 'https://loremflickr.com/800/600/candy,shop?random=2', link: 'https://github.com/HarshalPatel1972/sweet-shop-kata' },
+  { id: 3, title: 'Ghibli Elevator', image: 'https://loremflickr.com/800/600/anime,ghibli?random=3', link: 'https://github.com/HarshalPatel1972/ghibli-elevator' },
+  { id: 4, title: 'History Lasso', image: 'https://loremflickr.com/800/600/clock,history?random=4', link: 'https://github.com/HarshalPatel1972/history-lasso' },
+  { id: 5, title: 'Flipbook Marvel', image: 'https://loremflickr.com/800/600/comic,marvel?random=5', link: 'https://github.com/HarshalPatel1972/flipbook-marvel' },
+  { id: 6, title: 'Argument Arbiter', image: 'https://loremflickr.com/800/600/law,gavel?random=6', link: 'https://github.com/HarshalPatel1972/argument-arbiter' },
+  { id: 7, title: 'Mnemosyne', image: 'https://loremflickr.com/800/600/brain,memory?random=7', link: 'https://github.com/HarshalPatel1972/Mnemosyne' },
+  { id: 8, title: 'Timeline', image: 'https://loremflickr.com/800/600/time,scroll?random=8', link: 'https://github.com/HarshalPatel1972/timeline' },
+  { id: 9, title: 'Sweet Shop UI', image: 'https://loremflickr.com/800/600/dessert,ui?random=9', link: 'https://github.com/HarshalPatel1972/sweet-shop-frontend' },
+  { id: 10, title: 'Prompted by Harshal', image: 'https://loremflickr.com/800/600/creative,code?random=10', link: 'https://github.com/HarshalPatel1972/Prompted-by-Harshal' },
+  { id: 11, title: '100 Year Scroll', image: 'https://loremflickr.com/800/600/vintage,scroll?random=11', link: 'https://github.com/HarshalPatel1972/The-100-Year-Scroll' },
+  { id: 12, title: 'Guardian', image: 'https://loremflickr.com/800/600/shield,security?random=12', link: 'https://github.com/HarshalPatel1972/guardian' },
+  { id: 13, title: 'Truth Layer', image: 'https://loremflickr.com/800/600/eye,truth?random=13', link: 'https://github.com/HarshalPatel1972/truth-layer' },
+  { id: 14, title: 'Friday VA', image: 'https://loremflickr.com/800/600/robot,voice?random=14', link: 'https://github.com/HarshalPatel1972/friday-va' },
+  { id: 15, title: 'Global Pulse', image: 'https://loremflickr.com/800/600/earth,map?random=15', link: 'https://github.com/HarshalPatel1972/global-pulse' },
 ];
 
 export default function Home() {
