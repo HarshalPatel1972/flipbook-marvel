@@ -14,7 +14,7 @@ export default function Home() {
       <IntroLoader />
 
       {/* Scattered Image Gallery (Revealed after Loader Fades) */}
-      <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none h-screen">
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none h-screen">
         <div className="relative w-full h-full max-w-[1600px] mx-auto">
            {IMAGE_URLS.map((src, i) => {
               // Deterministic random positioning for stability
@@ -25,7 +25,7 @@ export default function Home() {
               return (
                 <motion.div
                     key={src}
-                    className="absolute w-44 h-28 md:w-64 md:h-40 bg-neutral-800 border-4 border-white/5 shadow-2xl overflow-hidden cursor-pointer pointer-events-auto hover:z-[60] hover:scale-150 transition-all duration-500 ease-out"
+                    className="absolute w-44 h-28 md:w-64 md:h-40 bg-neutral-800 border-4 border-white/5 shadow-2xl overflow-hidden cursor-pointer pointer-events-auto z-10 hover:z-[60] hover:scale-150 transition-all duration-500 ease-out"
                     style={{
                         left: `${(i % 5) * 20 + (Math.random() * 10 - 5)}%`, 
                         top: `${Math.floor(i / 5) * 25 + (Math.random() * 10 - 5)}%`,
