@@ -69,7 +69,7 @@ export default function IntroLoader() {
     if (phase === 'animating') {
         const timeout = setTimeout(() => {
             setPhase('complete');
-        }, 10000); // 10s animation
+        }, 8000); // 8s animation duration
         return () => clearTimeout(timeout);
     }
   }, [phase]);
@@ -87,7 +87,8 @@ export default function IntroLoader() {
             animate={phase === 'complete' ? { opacity: 0 } : { opacity: 1 }}
             transition={{ duration: 1.5, ease: "easeInOut" }}
         >
-             {(phase === 'animating' || phase === 'loading') && (
+             {/* Render images during 'complete' too so they freeze-frame while fading out */}
+             {(phase === 'animating' || phase === 'loading' || phase === 'complete') && (
                 <div className="absolute inset-0 w-full h-full">
                     {IMAGE_URLS.map((src, index) => (
                         <div 
@@ -96,8 +97,6 @@ export default function IntroLoader() {
                             style={{ 
                                 opacity: currentImageIndex === index ? 1 : 0,
                                 zIndex: currentImageIndex === index ? 10 : 1,
-                                // Use visibility to prevent painting off-screen images if needed, 
-                                // but opacity 0 is usually GPU optimized enough.
                             }}
                         >
                              <img 
@@ -129,7 +128,7 @@ export default function IntroLoader() {
                 initial={{ scale: 100 }}
                 animate={phase === 'animating' ? { scale: 1 } : phase === 'complete' ? { scale: 1 } : { scale: 100 }}
                 transition={{ 
-                    duration: 10, 
+                    duration: 8, 
                     ease: [0.16, 1, 0.3, 1] 
                 }}
             >
