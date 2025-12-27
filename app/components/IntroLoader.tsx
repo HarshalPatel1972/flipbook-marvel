@@ -62,24 +62,14 @@ export default function IntroLoader() {
       // Hold the "Logo Reveal" state (white text + red box) for 1s
       // The state transition triggers the UI change below
       const timeout = setTimeout(() => {
-        setPhase('exit');
-      }, 1000 + 400); // 1s hold + slight buffer for animation entry
-      return () => clearTimeout(timeout);
-    }
-  }, [phase]);
-
-  // 4. Exit Sequence
-  useEffect(() => {
-    if (phase === 'exit') {
-      const timeout = setTimeout(() => {
         setPhase('hidden');
-      }, 800);
+      }, 1400); // 1s hold + slight buffer for animation entry
       return () => clearTimeout(timeout);
     }
   }, [phase]);
 
-  if (phase === 'hidden') return null;
-
+  // Combined logic: 'hidden' triggers AnimatePresence exit
+  
   return (
     <AnimatePresence>
       {phase !== 'hidden' && (
@@ -98,11 +88,11 @@ export default function IntroLoader() {
           {/* Main Content Container */}
           <div className="relative z-10 flex flex-col items-center">
             
-            {/* The Red Box (Brand Background) - Only visible in freeze/exit */}
+            {/* The Red Box (Brand Background) - Only visible in freeze */}
             <motion.div
               initial={{ scaleX: 0, opacity: 0 }}
               animate={
-                phase === 'freeze' || phase === 'exit' 
+                phase === 'freeze' 
                   ? { scaleX: 1, opacity: 1 } 
                   : { scaleX: 0, opacity: 0 }
               }
