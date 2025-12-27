@@ -3,144 +3,186 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Generate 15 placeholder high-contrast image URLs for the flipbook effect
+// Generate 15 placeholder high-contrast image URLs
 const IMAGE_URLS = Array.from({ length: 15 }, (_, i) => 
-  `https://picsum.photos/seed/${i * 123}/1920/1080`
+  `https://picsum.photos/seed/${i * 47}/1920/1080`
 );
 
 export default function IntroLoader() {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
-  // States: 'loading' -> 'flipbook' -> 'reveal' -> 'complete'
-  const [phase, setPhase] = useState<'loading' | 'flipbook' | 'reveal' | 'complete'>('loading');
+  // Phases: loading -> chaos -> snap -> brand -> lift -> hidden
+  const [phase, setPhase] = useState<'loading' | 'chaos' | 'snap' | 'brand' | 'lift' | 'hidden'>('loading');
 
-  // 1. Preload Images
+  // Preload Images
   useEffect(() => {
     let loadedCount = 0;
     const totalImages = IMAGE_URLS.length;
+    let isMounted = true;
     
-    // Safety timeout in case images fail
-    const safetyTimeout = setTimeout(() => {
-      if (!imagesLoaded) {
-        setImagesLoaded(true);
-        setPhase('flipbook');
-      }
-    }, 3000);
+    // Fallback if images hang
+    const timer = setTimeout(() => {
+       if (isMounted && !imagesLoaded) {
+           setImagesLoaded(true);
+           setPhase('chaos');
+       }
+    }, 4000);
 
     IMAGE_URLS.forEach((src) => {
       const img = new Image();
       img.src = src;
       img.onload = () => {
         loadedCount++;
-        if (loadedCount === totalImages) {
-          clearTimeout(safetyTimeout);
+        if (loadedCount === totalImages && isMounted) {
+          clearTimeout(timer);
           setImagesLoaded(true);
-          // Small delay before starting
-          setTimeout(() => setPhase('flipbook'), 200);
+          setTimeout(() => setPhase('chaos'), 500);
         }
       };
       img.onerror = () => {
-        // Count errors as loaded to proceed anyway
-        loadedCount++;
-        if (loadedCount === totalImages) {
-            clearTimeout(safetyTimeout);
-            setImagesLoaded(true);
-            setPhase('flipbook');
+        loadedCount++; // proceed anyway
+        if (loadedCount === totalImages && isMounted) {
+          clearTimeout(timer);
+          setImagesLoaded(true);
+          setPhase('chaos');
         }
       };
     });
-    
-    return () => clearTimeout(safetyTimeout);
+
+    return () => { isMounted = false; clearTimeout(timer); };
   }, []);
 
-  // 2. Logic Controller
+  // Image Chaos Logic
   useEffect(() => {
-    if (phase === 'flipbook') {
-      // Phase 1: Comic Flip (0s - 3s)
-      // Rapid image cycling
+    if (phase === 'chaos' || phase === 'snap') {
       const interval = setInterval(() => {
         setCurrentImageIndex((prev) => (prev + 1) % IMAGE_URLS.length);
       }, 80);
-
-      const timeout = setTimeout(() => {
-        clearInterval(interval);
-        setPhase('reveal');
-      }, 3000);
-
-      return () => {
-        clearInterval(interval);
-        clearTimeout(timeout);
-      };
-    } else if (phase === 'reveal') {
-      // Phase 2: Zoom & Reveal (3s - 4s) + Hold (4s - 5s)
-      // The reveal transition takes about 1s (css/motion). We hold for 1s after.
-      // Total time here = 2s before exiting.
-      const timeout = setTimeout(() => {
-        setPhase('complete');
-      }, 2000); // 1s transition + 1s hold
-      return () => clearTimeout(timeout);
+      return () => clearInterval(interval);
     }
   }, [phase]);
 
+  // Phase Controller
+  useEffect(() => {
+    if (phase === 'chaos') {
+        const timeout = setTimeout(() => {
+            setPhase('snap');
+        }, 2500); 
+        return () => clearTimeout(timeout);
+    }
+    if (phase === 'snap') {
+         // The snap takes 0.5s. We wait effectively for the animation to finish + buffer
+        const timeout = setTimeout(() => {
+            setPhase('brand');
+        }, 550);
+        return () => clearTimeout(timeout);
+    }
+    if (phase === 'brand') {
+        const timeout = setTimeout(() => {
+            setPhase('lift');
+        }, 1500);
+        return () => clearTimeout(timeout);
+    }
+    if (phase === 'lift') {
+        const timeout = setTimeout(() => {
+            setPhase('hidden');
+        }, 800);
+        return () => clearTimeout(timeout);
+    }
+  }, [phase]);
+
+  if (phase === 'hidden') return null;
+
   return (
-    <AnimatePresence>
-      {phase !== 'complete' && (
-        <motion.div
-          key="intro-overlay"
-          initial={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black overflow-hidden"
+    <div className="fixed inset-0 z-50 overflow-hidden font-sans">
+        {/* Layer 0: The Slide-Up/Exit Wrapper */}
+        <motion.div 
+            className="absolute inset-0 bg-black"
+            initial={false}
+            animate={phase === 'lift' ? { y: '-100%' } : { y: '0%' }}
+            transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }} // theatre curtain ease
         >
-            {/* Container for Zoom Effect */}
-            <motion.div
-              className="relative flex flex-col items-center justify-center p-12"
-              initial={{ scale: 1.2 }}
-              animate={phase === 'reveal' ? { scale: 1 } : { scale: 1.2 }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
-            >
-                {/* Red Brand Box - Fades in behind text during reveal */}
-                <motion.div
-                    className="absolute inset-0 bg-[#EC1D24]"
-                    initial={{ opacity: 0 }}
-                    animate={phase === 'reveal' ? { opacity: 1 } : { opacity: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 }} 
-                />
+            
+            {/* Layer 1: The Image Chaos (Underneath) */}
+            {/* Only visible during chaos/snap. During brand, we hide it or cover it. */}
+            <div className="absolute inset-0 z-0 bg-neutral-900 flex items-center justify-center">
+                <AnimatePresence mode="popLayout">
+                    {(phase === 'chaos' || phase === 'snap') && (
+                        <motion.img
+                            key={currentImageIndex}
+                            src={IMAGE_URLS[currentImageIndex]}
+                            className="absolute inset-0 w-full h-full object-cover"
+                            initial={{ scale: 1.0, opacity: 0.8 }}
+                            animate={{ scale: 1.1, opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.1 }}
+                        />
+                    )}
+                </AnimatePresence>
+            </div>
 
-                {/* Text Content */}
-                <h1 
-                  className={`
-                    relative z-10 flex flex-col items-center justify-center text-center
-                    font-black text-7xl md:text-9xl leading-[0.85] tracking-tighter uppercase
-                    transition-colors duration-700
-                  `}
-                  style={{
-                    // Style switching based on phase
-                    color: phase === 'reveal' ? '#FFFFFF' : 'transparent',
-                    backgroundImage: phase === 'flipbook' ? `url(${IMAGE_URLS[currentImageIndex]})` : 'none',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    WebkitBackgroundClip: phase === 'flipbook' ? 'text' : 'border-box',
-                    backgroundClip: phase === 'flipbook' ? 'text' : 'border-box',
-                  }}
-                >
-                  <div className="flex flex-col items-center">
-                    <span>PROMPTED</span>
-                    <span>BY</span>
-                    <span>HARSHAL</span>
-                  </div>
-                </h1>
+            {/* Layer 2: The Mask (Black Background + White Text -> Multiply) */}
+            {/* When Phase == 'brand', we remove multiply so it becomes opaque black BG with white text */}
+            <motion.div 
+                className={`
+                    absolute inset-0 z-10 flex items-center justify-center bg-black
+                    ${(phase === 'chaos' || phase === 'snap') ? 'mix-blend-multiply' : ''}
+                `}
+                // Animate Scale of the Mask Container to create the fly-through effect
+                initial={{ scale: 15 }} 
+                animate={
+                    phase === 'chaos' ? { scale: 12 } :
+                    phase === 'snap' ? { scale: 1 } :
+                    phase === 'brand' ? { scale: 1 } :
+                    { scale: 15 } // default/initial
+                }
+                transition={
+                    phase === 'chaos' ? { duration: 2.5, ease: "linear" } :
+                    phase === 'snap' ? { duration: 0.5, ease: [0.25, 1, 0.5, 1] } :
+                    { duration: 0 }
+                }
+            >   
+                 {/* Red Brand Box (Behind Text during Brand phase) */}
+                 {phase === 'brand' && (
+                    <motion.div 
+                        initial={{ opacity: 0, scaleX: 0 }}
+                        animate={{ opacity: 1, scaleX: 1 }}
+                        transition={{ duration: 0.4 }}
+                        className="absolute w-[120%] h-[120%] bg-[#EC1D24] z-[-1]"
+                    />
+                 )}
+
+                <div className="relative text-center z-10">
+                    <h1 className="text-white font-black text-7xl md:text-9xl tracking-tighter leading-none flex flex-col items-center">
+                        <span>PROMPTED</span>
+                        <span>BY</span>
+                        <span>HARSHAL</span>
+                    </h1>
+                </div>
             </motion.div>
+            
+            {/* Flash Effect Overlay */}
+            <AnimatePresence>
+                {phase === 'brand' && (
+                    <motion.div 
+                         initial={{ opacity: 1 }}
+                         animate={{ opacity: 0 }}
+                         exit={{ opacity: 0 }}
+                         transition={{ duration: 0.2 }}
+                         className="absolute inset-0 z-50 bg-white pointer-events-none mix-blend-overlay"
+                    />
+                )}
+            </AnimatePresence>
 
-            {/* Loading Indicator (Optional) */}
+            {/* Loading Spinner (if needed) */}
             {phase === 'loading' && (
-                <div className="absolute bottom-10 text-neutral-500 text-sm animate-pulse">
-                    LOADING ASSETS...
+                <div className="absolute inset-0 z-50 flex items-center justify-center bg-black text-white">
+                    <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 </div>
             )}
+
         </motion.div>
-      )}
-    </AnimatePresence>
+    </div>
   );
 }
