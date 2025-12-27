@@ -162,9 +162,21 @@ export default function IntroLoader() {
   );
 }
 
-// Universal Particle System
+// Simple Particle System Component using React/Divs
 function ParticleOverlay({ type }: { type: 'snow' | 'embers' | 'dust' | 'debris' }) {
-    const particles = Array.from({ length: 30 });
+    const [particles, setParticles] = useState<{ id: number; x: number; y: number; duration: number; delay: number }[]>([]);
+
+    useEffect(() => {
+        // Generate particles only on client-side to access window and avoid hydration mismatch
+        const newParticles = Array.from({ length: 30 }).map((_, i) => ({
+            id: i,
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            duration: Math.random() * 1 + 0.5,
+            delay: Math.random() * 2
+        }));
+        setParticles(newParticles);
+    }, []);
     
     // Config per type
     const config: Record<string, { color: string; size: string; moveY?: number; moveX?: number }> = {
@@ -176,16 +188,18 @@ function ParticleOverlay({ type }: { type: 'snow' | 'embers' | 'dust' | 'debris'
 
     const c = config[type];
 
+    if (particles.length === 0) return null;
+
     return (
         <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
-             {particles.map((_, i) => (
+             {particles.map((p) => (
                  <motion.div
-                    key={i}
+                    key={p.id}
                     className={`absolute rounded-full opacity-60 ${c.color} ${c.size}`}
                     initial={{ 
                         opacity: 0, 
-                        x: Math.random() * window.innerWidth, 
-                        y: Math.random() * window.innerHeight 
+                        x: p.x, 
+                        y: p.y 
                     }}
                     animate={{ 
                         opacity: [0, 1, 0], 
@@ -194,9 +208,10 @@ function ParticleOverlay({ type }: { type: 'snow' | 'embers' | 'dust' | 'debris'
                         rotate: 360
                     }}
                     transition={{ 
-                        duration: Math.random() * 1 + 0.5, 
+                        duration: p.duration, 
                         repeat: Infinity, 
-                        ease: "linear"
+                        ease: "linear",
+                        delay: p.delay
                     }}
                  />
              ))}
