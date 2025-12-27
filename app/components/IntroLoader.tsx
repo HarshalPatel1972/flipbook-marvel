@@ -167,7 +167,7 @@ function ParticleOverlay({ type }: { type: 'snow' | 'embers' | 'dust' | 'debris'
     const particles = Array.from({ length: 30 });
     
     // Config per type
-    const config = {
+    const config: Record<string, { color: string; size: string; moveY?: number; moveX?: number }> = {
         snow: { color: 'bg-white', size: 'w-1 h-1', moveY: 1000 },
         embers: { color: 'bg-orange-500', size: 'w-2 h-2', moveY: -1000 },
         dust: { color: 'bg-stone-500', size: 'w-3 h-3', moveY: 100 }, // short fall
