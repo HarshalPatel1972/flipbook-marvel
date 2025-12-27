@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Use loremflickr for anime/comic style images
-const IMAGE_URLS = Array.from({ length: 15 }, (_, i) => 
+export const IMAGE_URLS = Array.from({ length: 15 }, (_, i) => 
   `https://loremflickr.com/1920/1080/anime,comic?random=${i}`
 );
 
