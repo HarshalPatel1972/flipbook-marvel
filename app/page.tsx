@@ -91,6 +91,23 @@ export default function Home() {
     <main className="min-h-screen bg-neutral-950 text-white selection:bg-red-500 selection:text-white relative overflow-hidden flex flex-col items-center justify-center perspective-[2000px]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(50,50,50,0.2),rgba(0,0,0,1))] pointer-events-none" />
 
+      {/* Persistent Brand Header (Appears after Intro) */}
+      <motion.header 
+        className="fixed top-0 left-0 w-full z-40 p-6 md:p-8 flex justify-between items-start pointer-events-none mix-blend-difference"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 7.5, duration: 1.5, ease: "easeOut" }}
+      >
+        <div>
+            <h1 className="text-white font-black text-2xl md:text-3xl tracking-tighter leading-none">
+                FLIPBOOK
+            </h1>
+            <p className="text-white/60 text-[10px] font-mono tracking-widest mt-1">
+                VOL. 01
+            </p>
+        </div>
+      </motion.header>
+
       <IntroLoader images={PROJECTS.map(p => p.image)} />
 
       <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none p-4">
