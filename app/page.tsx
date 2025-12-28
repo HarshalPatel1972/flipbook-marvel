@@ -118,12 +118,36 @@ export default function Home() {
         </div>
       </div>
 
-        {/* Branding Footer/Hero Overlay */}
-        <div className="absolute bottom-10 left-0 right-0 z-10 text-center pointer-events-none">
-             <p className="text-neutral-500 text-sm tracking-widest uppercase mb-2">Meta-Portfolio</p>
-             <h2 className="text-white font-black text-2xl tracking-tight">HARSHAL PATEL</h2>
-             <p className="mt-4 text-xs text-neutral-600 animate-pulse">Select a memory to enter</p>
-        </div>
+      {/* Persistent Footer Status Bar (Appears after Intro) */}
+      <motion.footer 
+        className="fixed bottom-0 left-0 w-full z-40 p-6 md:p-8 flex justify-between items-end pointer-events-none mix-blend-difference text-white"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 7.8, duration: 1.5, ease: "easeOut" }}
+      >
+          {/* Left: Identity & Role */}
+          <div className="flex flex-col items-start gap-1">
+              <h2 className="font-bold text-lg md:text-xl tracking-tight leading-none">HARSHAL PATEL</h2>
+              <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-white rounded-full opacity-60" />
+                  <span className="text-[10px] md:text-xs font-mono uppercase tracking-widest opacity-60">Full Stack Engineer</span>
+              </div>
+          </div>
+
+          {/* Center: Technical Label (Hidden on small mobile) */}
+          <div className="hidden md:flex flex-col items-center mb-1">
+              <span className="text-[10px] font-mono uppercase tracking-[0.3em] opacity-40">Meta-Portfolio [V1.0]</span>
+          </div>
+
+          {/* Right: Interaction Prompt */}
+          <div className="flex flex-col items-end gap-1">
+              <div className="flex items-center gap-2">
+                  <span className="text-xs md:text-sm font-bold tracking-wide uppercase">Select Memory</span>
+                  <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.8)]" />
+              </div>
+              <span className="text-[10px] font-mono opacity-50 tracking-wider">HOVER TO DECRYPT</span>
+          </div>
+      </motion.footer>
     </main>
   );
 }
