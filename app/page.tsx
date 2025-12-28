@@ -6,6 +6,7 @@ import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from
 // However, to enforce the warp effect, we must intercept the click.
 import IntroLoader from './components/IntroLoader';
 import WarpTransition from './components/WarpTransition';
+import MobileInteract from './components/MobileInteract';
 
 // Project Data for Meta-Portfolio Navigation (Strictly User Provided)
 const PROJECTS = [
@@ -16,7 +17,7 @@ const PROJECTS = [
   { id: 5, title: 'Pari Physiotherapy', image: '/img/Pari.png', link: 'https://pari-physiotherapy.vercel.app' },
 ];
 
-function ProjectCard({ project, index, onProjectClick }: { project: typeof PROJECTS[0], index: number, onProjectClick: (url: string) => void }) {
+function ProjectCard({ project, index, onProjectClick, isForceHovered }: { project: typeof PROJECTS[0], index: number, onProjectClick: (url: string) => void, isForceHovered: boolean }) {
     const ref = useRef<HTMLDivElement>(null);
 
     const x = useMotionValue(0);
@@ -54,8 +55,9 @@ function ProjectCard({ project, index, onProjectClick }: { project: typeof PROJE
             style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            onClick={() => onProjectClick(project.link)} // Trigger Warp
+            onClick={() => onProjectClick(project.link)}
             className="relative w-[300px] h-[200px] md:w-[350px] md:h-[220px] rounded-xl bg-neutral-900 border border-white/10 group perspective-1000 cursor-pointer z-10 hover:z-50"
+            data-project-id={project.id} // ID for mobile interaction
         >
             <div className="block w-full h-full relative" style={{ transformStyle: "preserve-3d" }}>
                 <div className="absolute inset-0 overflow-hidden rounded-xl bg-black transform-gpu">
@@ -66,18 +68,22 @@ function ProjectCard({ project, index, onProjectClick }: { project: typeof PROJE
                          <img 
                             src={project.image} 
                             alt={project.title} 
-                            className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 group-active:grayscale-0 group-hover:scale-110 group-active:scale-110 transition-all duration-700 ease-out"
+                            className={`w-full h-full object-cover filter transition-all duration-700 ease-out 
+                                ${isForceHovered ? 'grayscale-0 scale-110' : 'grayscale group-hover:grayscale-0 group-active:grayscale-0 group-hover:scale-110 group-active:scale-110'}
+                            `}
                             loading="eager"
                         />
                     </motion.div>
                 </div>
 
                 {/* Glare/Sheen */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-xl" />
+                <div className={`absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 transition-opacity duration-500 pointer-events-none rounded-xl ${isForceHovered ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`} />
 
                 {/* Floating Label */}
                 <div 
-                    className="absolute inset-x-0 bottom-0 p-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-active:translate-y-0 group-hover:opacity-100 group-active:opacity-100 transition-all duration-500 ease-out flex items-center justify-between pointer-events-none"
+                    className={`absolute inset-x-0 bottom-0 p-4 transition-all duration-500 ease-out flex items-center justify-between pointer-events-none
+                        ${isForceHovered ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0 group-hover:translate-y-0 group-active:translate-y-0 group-hover:opacity-100 group-active:opacity-100'}
+                    `}
                     style={{ transform: "translateZ(30px)" }}
                 >   
                     <div className="bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20 shadow-xl">
@@ -92,6 +98,7 @@ function ProjectCard({ project, index, onProjectClick }: { project: typeof PROJE
 export default function Home() {
   const [warpState, setWarpState] = useState<{ active: boolean, url: string | null }>({ active: false, url: null });
   const [interactionsEnabled, setInteractionsEnabled] = useState(false);
+  const [activeHoverId, setActiveHoverId] = useState<number | null>(null);
 
   // Reset warp state on mount and when returning from navigation (bfcache)
   useEffect(() => {
@@ -124,6 +131,8 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-neutral-950 text-white selection:bg-red-500 selection:text-white relative overflow-x-hidden overflow-y-auto md:overflow-hidden">
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(50,50,50,0.2),rgba(0,0,0,1))] pointer-events-none" />
+
+      {interactionsEnabled && <MobileInteract onHoverChange={setActiveHoverId} />}
 
       {/* Warp Transition Overlay */}
       <AnimatePresence mode="wait">
@@ -162,6 +171,7 @@ export default function Home() {
                     project={project} 
                     index={i} 
                     onProjectClick={(url) => setWarpState({ active: true, url })}
+                    isForceHovered={activeHoverId === project.id}
                 />
            ))}
         </div>
