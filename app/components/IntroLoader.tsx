@@ -12,6 +12,11 @@ export default function IntroLoader({ images, onComplete }: { images: string[], 
   const [phase, setPhase] = useState<'falling' | 'reveal' | 'solidify' | 'complete'>('falling');
   const sourceImages = images && images.length > 0 ? images : [];
 
+  const onCompleteRef = React.useRef(onComplete);
+  useEffect(() => {
+     onCompleteRef.current = onComplete;
+  }, [onComplete]);
+
   // Phase Orchestration
   useEffect(() => {
     // 1. Reveal Title
@@ -21,9 +26,9 @@ export default function IntroLoader({ images, onComplete }: { images: string[], 
     // 3. Complete (Scroll unlocked, overlay removed)
     setTimeout(() => {
         setPhase('complete');
-        if (onComplete) onComplete();
+        if (onCompleteRef.current) onCompleteRef.current();
     }, 7500);
-  }, [onComplete]);
+  }, []);
 
   return (
     <div className={`fixed inset-0 overflow-hidden bg-black pointer-events-none flex items-center justify-center transition-all duration-500 ${phase === 'complete' ? 'z-0 opacity-0' : 'z-50 opacity-100'}`}>
