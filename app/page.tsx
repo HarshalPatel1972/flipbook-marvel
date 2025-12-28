@@ -88,8 +88,8 @@ function ProjectCard({ project, index }: { project: typeof PROJECTS[0], index: n
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-neutral-950 text-white selection:bg-red-500 selection:text-white relative overflow-hidden flex flex-col items-center justify-center perspective-[2000px]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(50,50,50,0.2),rgba(0,0,0,1))] pointer-events-none" />
+    <main className="min-h-screen bg-neutral-950 text-white selection:bg-red-500 selection:text-white relative overflow-x-hidden overflow-y-auto">
+      <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(50,50,50,0.2),rgba(0,0,0,1))] pointer-events-none" />
 
       {/* Persistent Brand Header (Appears after Intro) */}
       <motion.header 
@@ -110,8 +110,9 @@ export default function Home() {
 
       <IntroLoader images={PROJECTS.map(p => p.image)} />
 
-      <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none p-4">
-        <div className="w-full max-w-7xl flex flex-wrap justify-center items-center gap-8 md:gap-12 pointer-events-auto">
+      {/* Project Grid - Scrollable Container */}
+      <div className="relative z-10 w-full min-h-screen flex items-center justify-center p-4 py-32">
+        <div className="w-full max-w-7xl flex flex-wrap justify-center items-center gap-8 md:gap-12">
            {PROJECTS.map((project, i) => (
                <ProjectCard key={project.id} project={project} index={i} />
            ))}
