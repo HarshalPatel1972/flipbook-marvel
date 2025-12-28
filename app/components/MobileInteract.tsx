@@ -14,9 +14,9 @@ export default function MobileInteract({ onHoverChange }: { onHoverChange: (id: 
     const [hasInteracted, setHasInteracted] = useState(false);
 
     useEffect(() => {
-        // Initial position safely set on mount to avoid hydration mismatch
-        x.set(window.innerWidth - 100);
-        y.set(window.innerHeight - 150);
+        // Initial position near top-left logo
+        x.set(140);
+        y.set(35);
     }, []);
 
     const handleDrag = () => {
@@ -49,24 +49,24 @@ export default function MobileInteract({ onHoverChange }: { onHoverChange: (id: 
             <motion.div 
                 ref={arrowRef}
                 className="absolute"
-                style={{ left: x, top: y, x: -60, y: -40 }} // Offset relative to cursor
+                style={{ left: x, top: y, x: 60, y: -10 }} // Offset to the right of the orb
                 initial={{ opacity: 0 }}
                 animate={{ opacity: hasInteracted ? 0 : 1 }}
                 transition={{ delay: 2, duration: 1 }}
             >
-                <div className="relative w-32">
-                     <p className="text-[10px] font-mono text-white/80 w-full text-right mb-1">
-                        Use to navigate
-                    </p>
-                    {/* Wavy Arrow SVG */}
-                    <svg width="40" height="40" viewBox="0 0 50 50" className="absolute right-0 rotate-12 stroke-white/60 fill-none">
-                        <path d="M10,10 Q20,40 40,30" strokeWidth="2" markerEnd="url(#arrowhead)" />
-                        <defs>
-                            <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="0" refY="2" orient="auto">
+                <div className="relative w-32 flex items-center gap-2">
+                    {/* Arrow pointing Left */}
+                    <svg width="30" height="20" viewBox="0 0 50 20" className="stroke-white/60 fill-none rotate-180">
+                         <path d="M0,10 L40,10" strokeWidth="2" markerEnd="url(#arrowhead_left)" />
+                         <defs>
+                            <marker id="arrowhead_left" markerWidth="6" markerHeight="4" refX="0" refY="2" orient="auto">
                                 <polygon points="0 0, 6 2, 0 4" fill="currentColor" />
                             </marker>
-                        </defs>
+                         </defs>
                     </svg>
+                     <p className="text-[10px] font-mono text-white/80 w-full mb-0.5 whitespace-nowrap">
+                        Drag to explore
+                    </p>
                 </div>
             </motion.div>
 
@@ -77,14 +77,43 @@ export default function MobileInteract({ onHoverChange }: { onHoverChange: (id: 
                 dragMomentum={false}
                 onDrag={handleDrag}
                 style={{ x, y }}
-                className="absolute w-16 h-16 pointer-events-auto cursor-grab active:cursor-grabbing touch-none"
+                className="absolute w-10 h-10 pointer-events-auto cursor-grab active:cursor-grabbing touch-none"
             >
                 {/* Visual Orb */}
-                <div className="w-full h-full rounded-full bg-white/10 backdrop-blur-sm border border-white/30 shadow-[0_0_15px_rgba(255,255,255,0.3)] flex items-center justify-center animate-pulse-slow">
-                    <div className="w-2 h-2 bg-white rounded-full shadow-[0_0_10px_white]" />
-                </div>
-                {/* Glow ring */}
-                <div className="absolute inset-0 -z-10 bg-white/5 rounded-full blur-xl" />
+                <motion.div 
+                    className="w-full h-full rounded-full backdrop-blur-sm border border-white/30 flex items-center justify-center"
+                    animate={{ 
+                        boxShadow: [
+                            "0 0 15px rgba(255,0,0,0.5)",
+                            "0 0 15px rgba(0,255,0,0.5)",
+                            "0 0 15px rgba(0,0,255,0.5)",
+                            "0 0 15px rgba(255,0,0,0.5)"
+                        ],
+                        backgroundColor: [
+                            "rgba(255,0,0,0.1)", 
+                            "rgba(0,255,0,0.1)", 
+                            "rgba(0,0,255,0.1)", 
+                            "rgba(255,0,0,0.1)"
+                        ]
+                    }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                >
+                    <div className="w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_10px_white]" />
+                </motion.div>
+                
+                {/* RGB Glow ring */}
+                <motion.div 
+                    className="absolute inset-0 -z-10 rounded-full blur-xl opacity-60" 
+                    animate={{ 
+                        backgroundColor: [
+                            "#ff0000",
+                            "#00ff00",
+                            "#0000ff",
+                            "#ff0000"
+                        ]
+                    }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                />
             </motion.div>
         </div>
     );
