@@ -14,9 +14,9 @@ export default function MobileInteract({ onHoverChange }: { onHoverChange: (id: 
     const [hasInteracted, setHasInteracted] = useState(false);
 
     useEffect(() => {
-        // Initial position near top-left logo
-        x.set(140);
-        y.set(35);
+        // Initial position Top-Right
+        x.set(window.innerWidth - 80);
+        y.set(40);
     }, []);
 
     const handleDrag = () => {
@@ -25,15 +25,15 @@ export default function MobileInteract({ onHoverChange }: { onHoverChange: (id: 
         const rect = cursorRef.current?.getBoundingClientRect();
         if (!rect) return;
 
-        // "Flashlight" collision detection
+        // Center of the orb
         const cx = rect.left + rect.width / 2;
         const cy = rect.top + rect.height / 2;
 
-        // Check element under the center of the orb
-        const element = document.elementFromPoint(cx, cy);
+        // Check all elements under the center point (pierce through the orb)
+        const elements = document.elementsFromPoint(cx, cy);
         
-        // Find closest parent with data-project-id
-        const card = element?.closest('[data-project-id]');
+        // Find the first element that belongs to a project card
+        const card = elements.find(el => el.closest('[data-project-id]'))?.closest('[data-project-id]');
         
         if (card) {
             const id = Number(card.getAttribute('data-project-id'));
@@ -45,29 +45,31 @@ export default function MobileInteract({ onHoverChange }: { onHoverChange: (id: 
 
     return (
         <div className="fixed inset-0 z-50 pointer-events-none md:hidden">
-            {/* Instruction Arrow & Text (Fades out on interaction) */}
+            {/* Instruction Arrow & Text (Disappears immediately on interaction) */}
             <motion.div 
                 ref={arrowRef}
                 className="absolute"
-                style={{ left: x, top: y, x: 60, y: -10 }} // Offset to the right of the orb
+                style={{ left: x, top: y, x: -140, y: 0 }} // Offset to the Left of the orb
                 initial={{ opacity: 0 }}
                 animate={{ opacity: hasInteracted ? 0 : 1 }}
-                transition={{ delay: 2, duration: 1 }}
-            >
-                <div className="relative w-32 flex items-center gap-2">
-                    {/* Arrow pointing Left */}
-                    <svg width="30" height="20" viewBox="0 0 50 20" className="stroke-white/60 fill-none rotate-180">
-                         <path d="M0,10 L40,10" strokeWidth="2" markerEnd="url(#arrowhead_left)" />
-                         <defs>
-                            <marker id="arrowhead_left" markerWidth="6" markerHeight="4" refX="0" refY="2" orient="auto">
-                                <polygon points="0 0, 6 2, 0 4" fill="currentColor" />
-                            </marker>
-                         </defs>
-                    </svg>
-                     <p className="text-[10px] font-mono text-white/80 w-full mb-0.5 whitespace-nowrap">
-                        Drag to explore
-                    </p>
-                </div>
+                transition={{ delay: 2, duration: 0.2 }} // Initial fade in delay, but we handle click removal fast
+            > 
+                {!hasInteracted && (
+                    <div className="relative w-32 flex items-center justify-end gap-2">
+                        <p className="text-[10px] font-mono text-white/80 mb-0.5 whitespace-nowrap">
+                            Drag this to navigate
+                        </p>
+                        {/* Arrow pointing Right (towards orb) */}
+                        <svg width="30" height="20" viewBox="0 0 50 20" className="stroke-white/60 fill-none">
+                             <path d="M0,10 L40,10" strokeWidth="2" markerEnd="url(#arrowhead_right)" />
+                             <defs>
+                                <marker id="arrowhead_right" markerWidth="6" markerHeight="4" refX="0" refY="2" orient="auto">
+                                    <polygon points="0 0, 6 2, 0 4" fill="currentColor" />
+                                </marker>
+                             </defs>
+                        </svg>
+                    </div>
+                )}
             </motion.div>
 
             {/* Glowing Orb Cursor */}
@@ -76,6 +78,7 @@ export default function MobileInteract({ onHoverChange }: { onHoverChange: (id: 
                 drag
                 dragMomentum={false}
                 onDrag={handleDrag}
+                onPointerDown={() => setHasInteracted(true)} // Immediate disappear on touch
                 style={{ x, y }}
                 className="absolute w-10 h-10 pointer-events-auto cursor-grab active:cursor-grabbing touch-none"
             >
