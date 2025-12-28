@@ -115,7 +115,7 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-neutral-950 text-white selection:bg-red-500 selection:text-white relative overflow-x-hidden overflow-y-auto">
+    <main className="min-h-screen bg-neutral-950 text-white selection:bg-red-500 selection:text-white relative overflow-x-hidden overflow-y-auto md:overflow-hidden">
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(50,50,50,0.2),rgba(0,0,0,1))] pointer-events-none" />
 
       {/* Warp Transition Overlay */}
@@ -146,7 +146,7 @@ export default function Home() {
       />
 
       {/* Project Grid - Scrollable Container */}
-      <div className={`relative z-10 w-full min-h-screen flex items-center justify-center p-4 pt-44 md:pt-60 pb-32 transition-opacity duration-1000 ${interactionsEnabled ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0 md:opacity-100'}`}>
+      <div className={`relative z-10 w-full min-h-screen md:h-screen flex items-center justify-center p-4 pt-44 pb-32 md:p-0 transition-opacity duration-1000 ${interactionsEnabled ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0 md:opacity-100'}`}>
         {/* Note: opacity-0 on mobile initially prevents flash, but let's just stick to pointer-events. logic: User wants links activated later. */}
         <div className="w-full max-w-7xl flex flex-wrap justify-center items-center gap-8 md:gap-12">
            {PROJECTS.map((project, i) => (
