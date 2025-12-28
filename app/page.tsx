@@ -16,40 +16,38 @@ const PROJECTS = [
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-neutral-950 text-white selection:bg-red-500 selection:text-white relative overflow-hidden">
+    <main className="min-h-screen bg-neutral-950 text-white selection:bg-red-500 selection:text-white relative overflow-hidden flex flex-col items-center justify-center">
       {/* Pass Project Images to IntroLoader so it flips through them */}
       <IntroLoader images={PROJECTS.map(p => p.image)} />
 
-      {/* Scattered Project Portal (Revealed after Loader Fades) */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none h-screen">
-        <div className="relative w-full h-full max-w-[1600px] mx-auto">
+      {/* Organized Project Grid (Revealed after Loader Fades) */}
+      <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none p-4">
+        <div className="w-full max-w-6xl flex flex-wrap justify-center items-center gap-8 pointer-events-auto">
            {PROJECTS.map((project, i) => {
-              // Deterministic random positioning for stability
-              const rotate = ((i * 34567) % 30) - 15; // -15 to 15 deg
-
               return (
                 <motion.div
                     key={project.id}
-                    className="absolute w-44 h-28 md:w-64 md:h-40 bg-neutral-800 border-4 border-white/5 shadow-2xl z-10 hover:z-[60] hover:scale-150 transition-all duration-500 ease-out group"
-                    style={{
-                        // Spread 5 items more centrally 
-                        left: `${15 + (i % 3) * 30 + (Math.random() * 10 - 5)}%`, 
-                        top: `${30 + Math.floor(i / 3) * 30 + (Math.random() * 10 - 5)}%`,
-                        rotate: `${rotate}deg`,
+                    className="relative w-64 h-40 bg-neutral-800 border-4 border-white/5 shadow-2xl overflow-hidden cursor-pointer group rounded-lg"
+                    initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    whileHover={{ 
+                        scale: 1.25, 
+                        zIndex: 60,
+                        rotate: 0,
+                        transition: { duration: 0.3 }
                     }}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 8.5 + (i * 0.1), duration: 0.8 }} 
+                    transition={{ delay: 8.5 + (i * 0.15), duration: 0.8 }} 
                 >
-                    <Link href={project.link} className="block w-full h-full pointer-events-auto cursor-pointer relative">
+                    <Link href={project.link} className="block w-full h-full relative">
                         <img 
                             src={project.image} 
                             alt={project.title} 
-                            className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-500"
+                            className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-300"
+                            loading="eager"
                         />
                         {/* Project Title Tooltip */}
-                        <div className="absolute inset-x-0 bottom-0 bg-black/80 backdrop-blur-sm p-2 translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                            <p className="text-white text-xs font-bold text-center tracking-wider uppercase">{project.title}</p>
+                        <div className="absolute inset-x-0 bottom-0 bg-black/90 backdrop-blur-md p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex flex-col items-center justify-center">
+                            <p className="text-white text-xs font-bold tracking-widest uppercase">{project.title}</p>
                         </div>
                     </Link>
                 </motion.div>
