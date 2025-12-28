@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
 // Link is no longer needed for the card wrapper if we use onClick, but could be useful for semantic HTML. 
 // However, to enforce the warp effect, we must intercept the click.
@@ -66,7 +66,7 @@ function ProjectCard({ project, index, onProjectClick }: { project: typeof PROJE
                          <img 
                             src={project.image} 
                             alt={project.title} 
-                            className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700 ease-out"
+                            className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 group-active:grayscale-0 group-hover:scale-110 group-active:scale-110 transition-all duration-700 ease-out"
                             loading="eager"
                         />
                     </motion.div>
@@ -77,7 +77,7 @@ function ProjectCard({ project, index, onProjectClick }: { project: typeof PROJE
 
                 {/* Floating Label */}
                 <div 
-                    className="absolute inset-x-0 bottom-0 p-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out flex items-center justify-between pointer-events-none"
+                    className="absolute inset-x-0 bottom-0 p-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-active:translate-y-0 group-hover:opacity-100 group-active:opacity-100 transition-all duration-500 ease-out flex items-center justify-between pointer-events-none"
                     style={{ transform: "translateZ(30px)" }}
                 >   
                     <div className="bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20 shadow-xl">
@@ -92,9 +92,24 @@ function ProjectCard({ project, index, onProjectClick }: { project: typeof PROJE
 export default function Home() {
   const [warpState, setWarpState] = useState<{ active: boolean, url: string | null }>({ active: false, url: null });
 
+  // Reset warp state on mount and when returning from navigation (bfcache)
+  useEffect(() => {
+    // Initial mount reset
+    setWarpState({ active: false, url: null });
+
+    const handlePageShow = (event: PageTransitionEvent) => {
+        if (event.persisted) {
+            setWarpState({ active: false, url: null });
+        }
+    };
+
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, []);
+
   const handleWarpComplete = () => {
       if (warpState.url) {
-          window.location.href = warpState.url; // Use standard navigation for external links
+          window.location.href = warpState.url; 
       }
   };
 
@@ -103,7 +118,7 @@ export default function Home() {
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(50,50,50,0.2),rgba(0,0,0,1))] pointer-events-none" />
 
       {/* Warp Transition Overlay */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
           {warpState.active && <WarpTransition onComplete={handleWarpComplete} />}
       </AnimatePresence>
 
