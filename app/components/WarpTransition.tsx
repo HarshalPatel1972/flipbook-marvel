@@ -98,37 +98,48 @@ export default function WarpTransition({ onComplete }: { onComplete: () => void 
     >
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
         
-        <div className="relative z-10 flex flex-col items-center gap-6 text-center">
-             {/* Antigravity Logo/Text */}
+        <div className="relative z-10 flex flex-col items-center gap-8 text-center pt-20">
+             {/* Antigravity Logo */}
              <motion.div
                 initial={{ scale: 0.8, opacity: 0, filter: 'blur(10px)' }}
                 animate={{ scale: 1, opacity: 1, filter: 'blur(0px)' }}
                 transition={{ duration: 0.5, delay: 0.5 }}
-                className="flex flex-col items-center"
+                className="flex flex-col items-center gap-4"
              >
-                <div className="w-16 h-16 border-4 border-white flex items-center justify-center rounded-full mb-4 animate-spin-slow">
-                    <span className="text-3xl font-black">A</span>
+                <div className="relative w-32 h-32 md:w-40 md:h-40 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center p-6 border border-white/20 shadow-[0_0_30px_rgba(255,255,255,0.2)] animate-pulse-slow">
+                     <img 
+                        src="/img/google-antigravity-logo.png" 
+                        alt="Antigravity" 
+                        className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]"
+                     />
                 </div>
-                <h2 className="text-2xl font-bold tracking-widest uppercase">Made by Antigravity</h2>
+                <h2 className="text-xl md:text-2xl font-bold tracking-[0.3em] uppercase text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/50">
+                    Antigravity
+                </h2>
              </motion.div>
 
              {/* Divider */}
              <motion.div 
-                className="w-px h-12 bg-white/50"
+                className="w-px h-16 bg-gradient-to-b from-transparent via-white/50 to-transparent"
                 initial={{ height: 0 }}
-                animate={{ height: 48 }}
+                animate={{ height: 64 }}
                 transition={{ delay: 1 }}
              />
 
-             {/* NextJS */}
-             <motion.p
+             {/* NextJS Logo */}
+             <motion.div
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 1.2 }}
-                className="text-sm text-neutral-400 uppercase tracking-[0.2em]"
+                className="flex flex-col items-center gap-3"
              >
-                Powered by Next.js
-             </motion.p>
+                <p className="text-[10px] md:text-xs text-neutral-400 uppercase tracking-[0.2em]">Powered by</p>
+                <img 
+                    src="/img/icons8-next.js.svg" 
+                    alt="Next.js" 
+                    className="h-8 md:h-10 w-auto invert opacity-80 hover:opacity-100 transition-opacity"
+                />
+             </motion.div>
         </div>
     </motion.div>
   );
