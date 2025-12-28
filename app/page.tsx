@@ -10,7 +10,7 @@ const PROJECTS = [
   { id: 1, title: 'A1 Tantra', image: '/img/A1Tantra.png', link: 'https://a1-tantra.vercel.app' },
   { id: 2, title: 'Ghibli Elevator', image: '/img/Elevator.png', link: 'https://ghibli-elevator.vercel.app' },
   { id: 3, title: 'Argument Arbiter', image: '/img/Argument.png', link: 'https://argument-arbiter.vercel.app' },
-  { id: 4, title: 'Timeline', image: '/img/Timline-app.png', link: 'https://timeline.vercel.app' },
+  { id: 4, title: 'Timeline', image: '/img/Timline-app.png', link: 'https://timeline-eight-beta.vercel.app/' },
   { id: 5, title: 'Pari Physiotherapy', image: '/img/Pari.png', link: 'https://pari-physiotherapy.vercel.app' },
 ];
 
