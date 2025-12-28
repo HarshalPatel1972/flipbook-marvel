@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useRef } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import Link from 'next/link';
+import React, { useRef, useState } from 'react';
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
+// Link is no longer needed for the card wrapper if we use onClick, but could be useful for semantic HTML. 
+// However, to enforce the warp effect, we must intercept the click.
 import IntroLoader from './components/IntroLoader';
+import WarpTransition from './components/WarpTransition';
 
 // Project Data for Meta-Portfolio Navigation (Strictly User Provided)
 const PROJECTS = [
@@ -14,7 +16,7 @@ const PROJECTS = [
   { id: 5, title: 'Pari Physiotherapy', image: '/img/Pari.png', link: 'https://pari-physiotherapy.vercel.app' },
 ];
 
-function ProjectCard({ project, index }: { project: typeof PROJECTS[0], index: number }) {
+function ProjectCard({ project, index, onProjectClick }: { project: typeof PROJECTS[0], index: number, onProjectClick: (url: string) => void }) {
     const ref = useRef<HTMLDivElement>(null);
 
     const x = useMotionValue(0);
@@ -52,9 +54,10 @@ function ProjectCard({ project, index }: { project: typeof PROJECTS[0], index: n
             style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
+            onClick={() => onProjectClick(project.link)} // Trigger Warp
             className="relative w-[300px] h-[200px] md:w-[350px] md:h-[220px] rounded-xl bg-neutral-900 border border-white/10 group perspective-1000 cursor-pointer z-10 hover:z-50"
         >
-            <Link href={project.link} className="block w-full h-full relative" style={{ transformStyle: "preserve-3d" }}>
+            <div className="block w-full h-full relative" style={{ transformStyle: "preserve-3d" }}>
                 <div className="absolute inset-0 overflow-hidden rounded-xl bg-black transform-gpu">
                     <motion.div 
                         className="absolute inset-[-20%] w-[140%] h-[140%]"
@@ -81,15 +84,28 @@ function ProjectCard({ project, index }: { project: typeof PROJECTS[0], index: n
                         <span className="text-white text-[10px] font-bold tracking-[0.2em] uppercase">{project.title}</span>
                     </div>
                 </div>
-            </Link>
+            </div>
         </motion.div>
     );
 }
 
 export default function Home() {
+  const [warpState, setWarpState] = useState<{ active: boolean, url: string | null }>({ active: false, url: null });
+
+  const handleWarpComplete = () => {
+      if (warpState.url) {
+          window.location.href = warpState.url; // Use standard navigation for external links
+      }
+  };
+
   return (
     <main className="min-h-screen bg-neutral-950 text-white selection:bg-red-500 selection:text-white relative overflow-x-hidden overflow-y-auto">
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(50,50,50,0.2),rgba(0,0,0,1))] pointer-events-none" />
+
+      {/* Warp Transition Overlay */}
+      <AnimatePresence>
+          {warpState.active && <WarpTransition onComplete={handleWarpComplete} />}
+      </AnimatePresence>
 
       {/* Persistent Brand Header (Appears after Intro) */}
       <motion.header 
@@ -114,7 +130,12 @@ export default function Home() {
       <div className="relative z-10 w-full min-h-screen flex items-center justify-center p-4 pt-44 md:pt-60 pb-32">
         <div className="w-full max-w-7xl flex flex-wrap justify-center items-center gap-8 md:gap-12">
            {PROJECTS.map((project, i) => (
-               <ProjectCard key={project.id} project={project} index={i} />
+               <ProjectCard 
+                    key={project.id} 
+                    project={project} 
+                    index={i} 
+                    onProjectClick={(url) => setWarpState({ active: true, url })}
+                />
            ))}
         </div>
       </div>
