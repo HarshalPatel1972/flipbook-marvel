@@ -1,10 +1,10 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import IntroLoader from './components/IntroLoader';
 
-// Project Data for Meta-Portfolio Navigation
 // Project Data for Meta-Portfolio Navigation (Strictly User Provided)
 const PROJECTS = [
   { id: 1, title: 'A1 Tantra', image: '/img/A1Tantra.png', link: 'https://a1-tantra.vercel.app' },
@@ -14,45 +14,90 @@ const PROJECTS = [
   { id: 5, title: 'Pari Physiotherapy', image: '/img/Pari.png', link: 'https://pari-physiotherapy.vercel.app' },
 ];
 
-export default function Home() {
-  return (
-    <main className="min-h-screen bg-neutral-950 text-white selection:bg-red-500 selection:text-white relative overflow-hidden flex flex-col items-center justify-center">
-      {/* Pass Project Images to IntroLoader so it flips through them */}
-      <IntroLoader images={PROJECTS.map(p => p.image)} />
+function ProjectCard({ project, index }: { project: typeof PROJECTS[0], index: number }) {
+    const ref = useRef<HTMLDivElement>(null);
 
-      {/* Organized Project Grid (Revealed after Loader Fades) */}
-      <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none p-4">
-        <div className="w-full max-w-6xl flex flex-wrap justify-center items-center gap-8 pointer-events-auto">
-           {PROJECTS.map((project, i) => {
-              return (
-                <motion.div
-                    key={project.id}
-                    className="relative w-64 h-40 bg-neutral-800 border-4 border-white/5 shadow-2xl overflow-hidden cursor-pointer group rounded-lg"
-                    initial={{ opacity: 0, y: 50, scale: 0.9 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    whileHover={{ 
-                        scale: 1.25, 
-                        zIndex: 60,
-                        rotate: 0,
-                        transition: { duration: 0.3 }
-                    }}
-                    transition={{ delay: 8.5 + (i * 0.15), duration: 0.8 }} 
-                >
-                    <Link href={project.link} className="block w-full h-full relative">
-                        <img 
+    const x = useMotionValue(0);
+    const y = useMotionValue(0);
+
+    const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [15, -15]), { stiffness: 150, damping: 20 });
+    const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-15, 15]), { stiffness: 150, damping: 20 });
+    
+    // Inverse Pan for Parallax
+    const imgX = useSpring(useTransform(x, [-0.5, 0.5], [-20, 20]), { stiffness: 150, damping: 20 });
+    const imgY = useSpring(useTransform(y, [-0.5, 0.5], [-20, 20]), { stiffness: 150, damping: 20 });
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (!ref.current) return;
+        const rect = ref.current.getBoundingClientRect();
+        
+        const mouseX = (e.clientX - rect.left) / rect.width - 0.5;
+        const mouseY = (e.clientY - rect.top) / rect.height - 0.5;
+
+        x.set(mouseX);
+        y.set(mouseY);
+    };
+
+    const handleMouseLeave = () => {
+        x.set(0);
+        y.set(0);
+    };
+
+    return (
+        <motion.div
+            ref={ref}
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 8.5 + (index * 0.2), duration: 1, type: "spring" }}
+            style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            className="relative w-[300px] h-[200px] md:w-[350px] md:h-[220px] rounded-xl bg-neutral-900 border border-white/10 group perspective-1000 cursor-pointer z-10 hover:z-50"
+        >
+            <Link href={project.link} className="block w-full h-full relative" style={{ transformStyle: "preserve-3d" }}>
+                <div className="absolute inset-0 overflow-hidden rounded-xl bg-black transform-gpu">
+                    <motion.div 
+                        className="absolute inset-[-20%] w-[140%] h-[140%]"
+                        style={{ x: imgX, y: imgY }}
+                    >
+                         <img 
                             src={project.image} 
                             alt={project.title} 
-                            className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-300"
+                            className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700 ease-out"
                             loading="eager"
                         />
-                        {/* Project Title Tooltip */}
-                        <div className="absolute inset-x-0 bottom-0 bg-black/90 backdrop-blur-md p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex flex-col items-center justify-center">
-                            <p className="text-white text-xs font-bold tracking-widest uppercase">{project.title}</p>
-                        </div>
-                    </Link>
-                </motion.div>
-              );
-           })}
+                    </motion.div>
+                </div>
+
+                {/* Glare/Sheen */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-xl" />
+
+                {/* Floating Label */}
+                <div 
+                    className="absolute inset-x-0 bottom-0 p-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out flex items-center justify-between pointer-events-none"
+                    style={{ transform: "translateZ(30px)" }}
+                >   
+                    <div className="bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20 shadow-xl">
+                        <span className="text-white text-[10px] font-bold tracking-[0.2em] uppercase">{project.title}</span>
+                    </div>
+                </div>
+            </Link>
+        </motion.div>
+    );
+}
+
+export default function Home() {
+  return (
+    <main className="min-h-screen bg-neutral-950 text-white selection:bg-red-500 selection:text-white relative overflow-hidden flex flex-col items-center justify-center perspective-[2000px]">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(50,50,50,0.2),rgba(0,0,0,1))] pointer-events-none" />
+
+      <IntroLoader images={PROJECTS.map(p => p.image)} />
+
+      <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none p-4">
+        <div className="w-full max-w-7xl flex flex-wrap justify-center items-center gap-8 md:gap-12 pointer-events-auto">
+           {PROJECTS.map((project, i) => (
+               <ProjectCard key={project.id} project={project} index={i} />
+           ))}
         </div>
       </div>
 
