@@ -132,17 +132,30 @@ export default function IntroLoader({ images }: { images: string[] }) {
             transition={{ duration: 1.5, ease: "easeInOut" }}
         >   
             <motion.div
-                className="relative text-center"
-                initial={{ scale: 100 }}
-                animate={phase === 'animating' ? { scale: 1 } : phase === 'complete' ? { scale: 1 } : { scale: 100 }}
+                className="relative flex flex-col items-center justify-center p-12"
+                initial={{ scale: 100, rotate: 5 }}
+                animate={phase === 'animating' ? { scale: 1, rotate: 0 } : phase === 'complete' ? { scale: 1, rotate: 0 } : { scale: 100, rotate: 5 }}
                 transition={{ 
                     duration: 8, 
                     ease: [0.16, 1, 0.3, 1] 
                 }}
             >
-                <h1 className="text-white font-black text-8xl md:text-[12rem] tracking-tighter leading-none">
-                    FlipBook
+                {/* Decorative Top Data */}
+                <div className="w-full flex justify-between items-end border-b-4 border-white pb-2 mb-2 text-white font-mono text-[1vw] md:text-sm font-bold tracking-widest opacity-80">
+                    <span>FIG. 01</span>
+                    <span>// SYSTEM_READY</span>
+                </div>
+
+                {/* MAIN MASSIVE TITLE */}
+                <h1 className="text-white font-black text-[20vw] leading-[0.8] tracking-[-0.08em] scale-y-125 transform-gpu mb-4">
+                    FLIPBOOK
                 </h1>
+
+                {/* Decorative Bottom Data */}
+                <div className="w-full flex justify-between items-start border-t-4 border-white pt-2 text-white font-mono text-[1vw] md:text-sm font-bold tracking-widest opacity-80">
+                    <span>CREATIVE_DEV</span>
+                    <span>2025</span>
+                </div>
             </motion.div>
         </motion.div>
 
