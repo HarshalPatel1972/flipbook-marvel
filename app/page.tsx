@@ -111,7 +111,7 @@ export default function Home() {
       <IntroLoader images={PROJECTS.map(p => p.image)} />
 
       {/* Project Grid - Scrollable Container */}
-      <div className="relative z-10 w-full min-h-screen flex items-center justify-center p-4 py-32">
+      <div className="relative z-10 w-full min-h-screen flex items-center justify-center p-4 pt-36 md:pt-48 pb-32">
         <div className="w-full max-w-7xl flex flex-wrap justify-center items-center gap-8 md:gap-12">
            {PROJECTS.map((project, i) => (
                <ProjectCard key={project.id} project={project} index={i} />
