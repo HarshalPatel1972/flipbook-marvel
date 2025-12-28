@@ -132,7 +132,7 @@ export default function IntroLoader({ images }: { images: string[] }) {
             transition={{ duration: 1.5, ease: "easeInOut" }}
         >   
             <motion.div
-                className="relative flex flex-col items-center justify-center p-12"
+                className="relative flex flex-col items-center justify-center p-4 md:p-12 w-full max-w-[90vw] md:max-w-screen-xl mx-auto"
                 initial={{ scale: 100, rotate: 5 }}
                 animate={phase === 'animating' ? { scale: 1, rotate: 0 } : phase === 'complete' ? { scale: 1, rotate: 0 } : { scale: 100, rotate: 5 }}
                 transition={{ 
@@ -141,18 +141,19 @@ export default function IntroLoader({ images }: { images: string[] }) {
                 }}
             >
                 {/* Decorative Top Data */}
-                <div className="w-full flex justify-between items-end border-b-4 border-white pb-2 mb-2 text-white font-mono text-[1vw] md:text-sm font-bold tracking-widest opacity-80">
+                <div className="w-full flex justify-between items-end border-b-2 md:border-b-4 border-white pb-2 mb-2 md:mb-4 text-white font-mono text-[10px] sm:text-xs md:text-sm font-bold tracking-widest opacity-80">
                     <span>FIG. 01</span>
-                    <span>// SYSTEM_READY</span>
+                    <span className="hidden sm:inline">// SYSTEM_READY</span>
+                    <span className="sm:hidden">RDY</span>
                 </div>
 
-                {/* MAIN MASSIVE TITLE */}
-                <h1 className="text-white font-black text-[20vw] leading-[0.8] tracking-[-0.08em] scale-y-125 transform-gpu mb-4">
+                {/* MAIN MASSIVE TITLE - Optimized for Mobile & Web */}
+                <h1 className="text-white font-black text-6xl sm:text-8xl md:text-9xl lg:text-[13rem] leading-none tracking-tighter transform-gpu mb-4 md:mb-8 text-center break-words w-full">
                     FLIPBOOK
                 </h1>
 
                 {/* Decorative Bottom Data */}
-                <div className="w-full flex justify-between items-start border-t-4 border-white pt-2 text-white font-mono text-[1vw] md:text-sm font-bold tracking-widest opacity-80">
+                <div className="w-full flex justify-between items-start border-t-2 md:border-t-4 border-white pt-2 text-white font-mono text-[10px] sm:text-xs md:text-sm font-bold tracking-widest opacity-80">
                     <span>CREATIVE_DEV</span>
                     <span>2025</span>
                 </div>
