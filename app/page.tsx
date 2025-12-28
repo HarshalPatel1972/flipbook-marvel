@@ -95,9 +95,14 @@ export default function Home() {
 
   // Reset warp state on mount and when returning from navigation (bfcache)
   useEffect(() => {
+    // Robust Scroll Reset: constant battle with browser restoration
+    if ('scrollRestoration' in window.history) {
+        window.history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+    
     // Initial mount reset
     setWarpState({ active: false, url: null });
-    window.scrollTo(0, 0); // Force scroll to top on mount/reload
 
     const handlePageShow = (event: PageTransitionEvent) => {
         if (event.persisted) {
