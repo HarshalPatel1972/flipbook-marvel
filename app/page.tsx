@@ -91,6 +91,7 @@ function ProjectCard({ project, index, onProjectClick }: { project: typeof PROJE
 
 export default function Home() {
   const [warpState, setWarpState] = useState<{ active: boolean, url: string | null }>({ active: false, url: null });
+  const [interactionsEnabled, setInteractionsEnabled] = useState(false);
 
   // Reset warp state on mount and when returning from navigation (bfcache)
   useEffect(() => {
@@ -139,10 +140,14 @@ export default function Home() {
         </div>
       </motion.header>
 
-      <IntroLoader images={PROJECTS.map(p => p.image)} />
+      <IntroLoader 
+        images={PROJECTS.map(p => p.image)} 
+        onComplete={() => setInteractionsEnabled(true)}
+      />
 
       {/* Project Grid - Scrollable Container */}
-      <div className="relative z-10 w-full min-h-screen flex items-center justify-center p-4 pt-44 md:pt-60 pb-32">
+      <div className={`relative z-10 w-full min-h-screen flex items-center justify-center p-4 pt-44 md:pt-60 pb-32 transition-opacity duration-1000 ${interactionsEnabled ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0 md:opacity-100'}`}>
+        {/* Note: opacity-0 on mobile initially prevents flash, but let's just stick to pointer-events. logic: User wants links activated later. */}
         <div className="w-full max-w-7xl flex flex-wrap justify-center items-center gap-8 md:gap-12">
            {PROJECTS.map((project, i) => (
                <ProjectCard 

@@ -8,7 +8,7 @@ export const IMAGE_URLS = Array.from({ length: 15 }, (_, i) =>
   `https://loremflickr.com/1920/1080/anime,comic?random=${i}`
 );
 
-export default function IntroLoader({ images }: { images: string[] }) {
+export default function IntroLoader({ images, onComplete }: { images: string[], onComplete?: () => void }) {
   const [phase, setPhase] = useState<'falling' | 'reveal' | 'solidify' | 'complete'>('falling');
   const sourceImages = images && images.length > 0 ? images : [];
 
@@ -19,8 +19,11 @@ export default function IntroLoader({ images }: { images: string[] }) {
     // 2. Solidify (Images stop/fade, Title becomes solid & settled)
     setTimeout(() => setPhase('solidify'), 6000);
     // 3. Complete (Scroll unlocked, overlay removed)
-    setTimeout(() => setPhase('complete'), 7500);
-  }, []);
+    setTimeout(() => {
+        setPhase('complete');
+        if (onComplete) onComplete();
+    }, 7500);
+  }, [onComplete]);
 
   return (
     <div className={`fixed inset-0 overflow-hidden bg-black pointer-events-none flex items-center justify-center transition-all duration-500 ${phase === 'complete' ? 'z-0 opacity-0' : 'z-50 opacity-100'}`}>

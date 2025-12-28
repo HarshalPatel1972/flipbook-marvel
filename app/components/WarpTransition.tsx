@@ -98,48 +98,68 @@ export default function WarpTransition({ onComplete }: { onComplete: () => void 
     >
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
         
-        <div className="relative z-10 flex flex-col items-center gap-8 text-center pt-20">
-             {/* Antigravity Logo */}
+        <div className="relative z-10 flex flex-col items-center justify-center gap-6 text-center pt-10">
+             
+             {/* Made by Antigravity */}
              <motion.div
-                initial={{ scale: 0.8, opacity: 0, filter: 'blur(10px)' }}
-                animate={{ scale: 1, opacity: 1, filter: 'blur(0px)' }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.5 }}
-                className="flex flex-col items-center gap-4"
+                className="flex flex-col items-center gap-2"
              >
-                <div className="relative w-32 h-32 md:w-40 md:h-40 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center p-6 border border-white/20 shadow-[0_0_30px_rgba(255,255,255,0.2)] animate-pulse-slow">
-                     <img 
-                        src="/img/google-antigravity-logo.png" 
-                        alt="Antigravity" 
-                        className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]"
-                     />
-                </div>
-                <h2 className="text-xl md:text-2xl font-bold tracking-[0.3em] uppercase text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/50">
-                    Antigravity
-                </h2>
+                 <span className="text-xs md:text-sm font-mono text-neutral-400 uppercase tracking-widest">
+                     Made by
+                 </span>
+                 
+                 <div className="flex items-center justify-center gap-0.5">
+                     {/* Replaces 'A' */}
+                     <div className="relative w-8 h-8 md:w-10 md:h-10">
+                          <img 
+                            src="/img/google-antigravity-logo.png" 
+                            alt="A" 
+                            className="w-full h-full object-contain"
+                         />
+                     </div>
+                     <h2 className="text-2xl md:text-3xl font-bold tracking-widest uppercase text-white">
+                        ntigravity
+                     </h2>
+                 </div>
              </motion.div>
 
              {/* Divider */}
              <motion.div 
-                className="w-px h-16 bg-gradient-to-b from-transparent via-white/50 to-transparent"
-                initial={{ height: 0 }}
-                animate={{ height: 64 }}
+                className="w-12 h-px bg-white/30"
+                initial={{ width: 0 }}
+                animate={{ width: 48 }}
                 transition={{ delay: 1 }}
              />
 
-             {/* NextJS Logo */}
+             {/* Powered by Next.js */}
              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.2 }}
-                className="flex flex-col items-center gap-3"
+                className="flex flex-col items-center gap-2"
              >
-                <p className="text-[10px] md:text-xs text-neutral-400 uppercase tracking-[0.2em]">Powered by</p>
-                <img 
-                    src="/img/icons8-next.js.svg" 
-                    alt="Next.js" 
-                    className="h-8 md:h-10 w-auto invert opacity-80 hover:opacity-100 transition-opacity"
-                />
+                <span className="text-[10px] md:text-xs font-mono text-neutral-400 uppercase tracking-widest">
+                    Powered by
+                </span>
+                
+                <div className="flex items-center justify-center gap-0.5">
+                     {/* Replaces 'N' */}
+                     <div className="relative w-6 h-6 md:w-8 md:h-8">
+                         <img 
+                            src="/img/icons8-next.js.svg" 
+                            alt="N" 
+                            className="w-full h-full object-contain invert"
+                        />
+                     </div>
+                     <span className="text-lg md:text-xl font-bold tracking-wider text-white">
+                        ext.js
+                     </span>
+                </div>
              </motion.div>
+
         </div>
     </motion.div>
   );
